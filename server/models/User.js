@@ -4,20 +4,24 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, 'Please provide a name'],
         trim: true
     },
     email: {
         type: String,
-        required: true,
+        required: [true, 'Please provide an email'],
         unique: true,
-        trim: true,
-        lowercase: true
+        lowercase: true,
+        match: [
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            'Please provide a valid email',
+        ],
     },
     password: {
         type: String,
-        required: true,
-        minlength: 6
+        required: [true, 'Please provide a password'],
+        minlength: 6,
+        select: false,
     },
     role: {
         type: String,
@@ -53,7 +57,7 @@ userSchema.pre('save', async function(next) {
 
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
-    return bcrypt.compare(candidatePassword, this.password);
+    return await bcrypt.compare(candidatePassword, this.password);
 };
 
 const User = mongoose.model('User', userSchema);

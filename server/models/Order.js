@@ -11,7 +11,6 @@ const orderSchema = new mongoose.Schema({
         quantity: { type: Number, required: true },
         image: { type: String, required: true },
         price: { type: Number, required: true },
-        size: { type: String, required: true },
         product: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product',
@@ -19,21 +18,20 @@ const orderSchema = new mongoose.Schema({
         }
     }],
     shippingAddress: {
-        street: { type: String, required: true },
+        address: { type: String, required: true },
         city: { type: String, required: true },
-        state: { type: String, required: true },
-        zipCode: { type: String, required: true },
-        country: { type: String, required: true }
+        postalCode: { type: String, required: true },
+        country: { type: String, required: true },
     },
     paymentMethod: {
         type: String,
         required: true
     },
     paymentResult: {
-        id: String,
-        status: String,
-        update_time: String,
-        email_address: String
+        id: { type: String },
+        status: { type: String },
+        update_time: { type: String },
+        email_address: { type: String },
     },
     itemsPrice: {
         type: Number,
@@ -71,16 +69,8 @@ const orderSchema = new mongoose.Schema({
     deliveredAt: {
         type: Date
     },
-    status: {
-        type: String,
-        required: true,
-        enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
-        default: 'pending'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+}, {
+    timestamps: true,
 });
 
 const Order = mongoose.model('Order', orderSchema);
